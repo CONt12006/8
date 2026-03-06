@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С 8 Марта!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Скрываем все страницы кроме первой */
+        #page2, #page3, #page4, #page5, .final-congrats {
+            display: none;
+        }
+
+        #page1 {
+            display: block;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            color: #d63384;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(214, 51, 132, 0.6);
+        }
+
+        .start-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .game-title {
+            font-size: 28px;
+            color: #d63384;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .heart-container {
+            display: inline-block;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(214, 51, 132, 0.1);
+        }
+
+        .heart-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+
+        .heart-cell {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 3px solid #ffd6e7;
+        }
+
+        .heart-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(214, 51, 132, 0.3);
+        }
+
+        .heart-cell.colored {
+            background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%);
+            border-color: #d63384;
+            animation: colorPop 0.4s ease;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
+        }
+
+        .final-message {
+            display: none;
+            font-size: 36px;
+            color: #d63384;
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(214, 51, 132, 0.3);
+            animation: fadeIn 1s ease-in, bounce 0.6s ease 0.5s both;
+            font-weight: bold;
+        }
+
+        .heart-emoji {
+            font-size: 50px;
+            display: block;
+            margin-top: 15px;
+        }
+
+        .clicker-title {
+            font-size: 26px;
+            color: #d63384;
+            margin-bottom: 20px;
+        }
+
+        .timer-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .flip-number {
+            background: #1a1a1a;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            padding: 15px 25px;
+            border-radius: 10px;
+            min-width: 70px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .timer-label {
+            font-size: 20px;
+            color: #d63384;
+            margin-left: 10px;
+        }
+
+        .clicker-area {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(214, 51, 132, 0.1);
+        }
+
+        .clicker-heart {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            font-size: 45px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            user-select: none;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            z-index: 10;
+        }
+
+        .clicker-heart:hover {
+            transform: scale(1.2);
+        }
+
+        .clicker-heart:active {
+            transform: scale(0.9);
+        }
+
+        .clicker-heart.clicked {
+            animation: heartClick 0.3s ease;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d, #d63384);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .clicker-message {
+            font-size: 24px;
+            color: #d63384;
+            margin-top: 20px;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 30px auto;
+            max-width: 900px;
+        }
+
+        .photo-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            aspect-ratio: 1;
+            height: 350px;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(214, 51, 132, 0.5);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: #d63384;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            z-index: 10;
+            animation: selectPop 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .photo-card.selected {
+            box-shadow: 0 0 0 5px #d63384, 0 12px 35px rgba(214, 51, 132, 0.5);
+        }
+
+        @keyframes selectPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .progress-info {
+            font-size: 22px;
+            color: #d63384;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: #d63384;
+            font-size: 18px;
+            margin-top: 15px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        .final-congrats h2 {
+            font-size: 42px;
+            color: #d63384;
+            margin-bottom: 25px;
+        }
+
+        .final-congrats p {
+            font-size: 26px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .final-emoji {
+            font-size: 70px;
+            margin: 20px 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes colorPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes heartClick {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(var(--tx1), var(--ty1)); }
+            50% { transform: translate(var(--tx2), var(--ty2)); }
+            75% { transform: translate(var(--tx3), var(--ty3)); }
+        }
+
+        .floating {
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @media (max-width: 900px) {
+            .photos-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .photo-card {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .welcome-text { font-size: 22px; }
+            .heart-cell { width: 45px; height: 45px; }
+            .clicker-area { height: 350px; }
+            .clicker-heart { width: 50px; height: 50px; font-size: 35px; }
+            .flip-number { font-size: 36px; padding: 10px 15px; }
+            .photos-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 15px; 
+            }
+            .photo-card {
+                height: 250px;
+            }
+            .final-congrats p {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="page1">
+            <h1 class="welcome-text">Поздравляю тебя любимая с 8 марта и предлагаю сыграть в небольшие игры</h1>
+            <button class="start-btn" onclick="goToHeartColoring()">Начать</button>
+        </div>
+
+        <div id="page2">
+            <h2 class="game-title">Раскрась всё сердечко! 💕</h2>
+            <div class="heart-container" id="heartContainer"></div>
+            <div class="final-message" id="coloringComplete">Молодец! 💖<span class="heart-emoji">🌸✨</span></div>
+            <div style="margin-top: 30px; display: none;" id="nextGameBtn">
+                <button class="start-btn" onclick="goToClickerGame()">Следующая игра →</button>
+            </div>
+        </div>
+
+        <div id="page3">
+            <h2 class="clicker-title">Успей нажать все сердечки! ⏱️</h2>
+            <div class="timer-container">
+                <div class="flip-number" id="timerDisplay">15</div>
+                <div class="timer-label">секунд</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div class="clicker-area" id="clickerArea"></div>
+            <div class="clicker-message" id="clickerMessage"></div>
+        </div>
+
+        <div id="page4">
+            <h2 class="game-title">💖 Выбери фото с самой красивой девушкой на свете! 💖</h2>
+            <div class="photos-grid">
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo1.jpg" alt="Фото 1"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo2.jpg" alt="Фото 2"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo3.jpg" alt="Фото 3"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo4.jpg" alt="Фото 4"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo5.jpg" alt="Фото 5"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 1)"><img src="photo6.jpg" alt="Фото 6"></div>
+            </div>
+            <div class="progress-info" id="progressInfo1">Выбрано: 0 из 6</div>
+            <button class="start-btn" id="photoNextBtn1" onclick="goToPhotoSelection2()" style="display: none;">Дальше →</button>
+            <div class="error-message" id="errorMessage1">❌ Нужно выбрать все 6 фотографий!</div>
+        </div>
+
+        <div id="page5">
+            <h2 class="game-title">💖 И ещё фото с самой красивой! 💖</h2>
+            <div class="photos-grid">
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo7.jpg" alt="Фото 7"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo8.jpg" alt="Фото 8"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo9.jpg" alt="Фото 9"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo10.jpg" alt="Фото 10"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo11.jpg" alt="Фото 11"></div>
+                <div class="photo-card" onclick="toggleSelect(this, 2)"><img src="photo12.jpg" alt="Фото 12"></div>
+            </div>
+            <div class="progress-info" id="progressInfo2">Выбрано: 0 из 6</div>
+            <button class="start-btn" id="photoNextBtn2" onclick="goToFinalPage()" style="display: none;">Перейти к поздравлению →</button>
+            <div class="error-message" id="errorMessage2">❌ Нужно выбрать все 6 фотографий!</div>
+        </div>
+
+        <div class="final-congrats" id="finalCongrats">
+            <h2>🎉 ПОЗДРАВЛЯЮ! 🎉</h2>
+            <div class="final-emoji">💐❤️</div>
+            <p>Тогда любимая моя очень хочется поздравить тебя лично с международным женским днем, выйди на ко мне, люблю тебя солнышко и поздравляю от всей души любимая моя</p>
+            <div style="font-size: 50px; margin-top: 20px;">🌹💕</div>
+        </div>
+    </div>
+
+    <script>
+        const heartPattern = [[0,1,0,1,0],[1,1,1,1,1],[1,1,1,1,1],[0,1,1,1,0],[0,0,1,0,0]];
+        let coloredCells = 0, totalCells = 0, timer, timeLeft = 15, heartsClicked = 0;
+        const totalHearts = 15;
+        let gameActive = false, selectedPhotos1 = 0, selectedPhotos2 = 0;
+        const totalPhotos1 = 6, totalPhotos2 = 6;
+
+        function showPage(pageId) {
+            ['page1','page2','page3','page4','page5','finalCongrats'].forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        function goToHeartColoring() {
+            showPage('page2');
+            createHeart();
+        }
+
+        function createHeart() {
+            const container = document.getElementById('heartContainer');
+            container.innerHTML = '';
+            heartPattern.forEach((row, rowIndex) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'heart-row';
+                row.forEach((cell, cellIndex) => {
+                    if (cell === 1) {
+                        const cellDiv = document.createElement('div');
+                        cellDiv.className = 'heart-cell';
+                        cellDiv.onclick = () => colorCell(cellDiv);
+                        rowDiv.appendChild(cellDiv);
+                        totalCells++;
+                    }
+                });
+                container.appendChild(rowDiv);
+            });
+        }
+
+        function colorCell(cell) {
+            if (!cell.classList.contains('colored')) {
+                cell.classList.add('colored');
+                coloredCells++;
+                if (coloredCells === totalCells) {
+                    setTimeout(() => {
+                        document.getElementById('coloringComplete').style.display = 'block';
+                        document.getElementById('nextGameBtn').style.display = 'block';
+                        createConfetti();
+                    }, 500);
+                }
+            }
+        }
+
+        function goToClickerGame() {
+            showPage('page3');
+            initClickerGame();
+        }
+
+        function initClickerGame() {
+            const container = document.getElementById('clickerArea');
+            container.innerHTML = '';
+            heartsClicked = 0;
+            timeLeft = 15;
+            gameActive = true;
+            const areaWidth = container.offsetWidth;
+            const areaHeight = container.offsetHeight;
+            const heartSize = 60;
+            
+            for (let i = 0; i < totalHearts; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'clicker-heart floating';
+                heart.innerHTML = '❤️';
+                const maxX = areaWidth - heartSize;
+                const maxY = areaHeight - heartSize;
+                heart.style.left = (Math.random() * maxX) + 'px';
+                heart.style.top = (Math.random() * maxY) + 'px';
+                heart.style.setProperty('--tx1', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.setProperty('--ty1', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.setProperty('--tx2', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.setProperty('--ty2', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.setProperty('--tx3', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.setProperty('--ty3', ((Math.random() - 0.5) * 100) + 'px');
+                heart.style.animationDelay = (Math.random() * 8) + 's';
+                heart.style.animationDuration = (6 + Math.random() * 4) + 's';
+                heart.onclick = () => clickHeart(heart);
+                container.appendChild(heart);
+            }
+            updateTimer();
+            updateProgress();
+            document.getElementById('clickerMessage').textContent = '';
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                updateProgress();
+                if (timeLeft <= 0) resetGame();
+            }, 1000);
+        }
+
+        function clickHeart(heart) {
+            if (!gameActive || heart.classList.contains('clicked')) return;
+            heart.classList.add('clicked');
+            heart.classList.remove('floating');
+            heartsClicked++;
+            updateProgress();
+            if (heartsClicked === totalHearts) gameComplete();
+        }
+
+        function updateTimer() {
+            document.getElementById('timerDisplay').textContent = timeLeft;
+        }
+
+        function updateProgress() {
+            const percentage = (heartsClicked / totalHearts) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function resetGame() {
+            clearInterval(timer);
+            gameActive = false;
+            const message = document.getElementById('clickerMessage');
+            message.textContent = '⏰ Время вышло! Начинаем заново...';
+            message.classList.add('shake');
+            setTimeout(() => {
+                message.classList.remove('shake');
+                initClickerGame();
+            }, 1500);
+        }
+
+        function gameComplete() {
+            clearInterval(timer);
+            gameActive = false;
+            document.getElementById('clickerMessage').textContent = '🎉 Отлично! Ты успела! Переходим дальше...';
+            setTimeout(() => showPage('page4'), 1500);
+        }
+
+        function toggleSelect(card, page) {
+            card.classList.toggle('selected');
+            updatePhotoProgress(page);
+        }
+
+        function updatePhotoProgress(page) {
+            if (page === 1) {
+                const selectedCards = document.querySelectorAll('#page4 .photo-card.selected');
+                selectedPhotos1 = selectedCards.length;
+                document.getElementById('progressInfo1').textContent = `Выбрано: ${selectedPhotos1} из ${totalPhotos1}`;
+                if (selectedPhotos1 === totalPhotos1) {
+                    document.getElementById('photoNextBtn1').style.display = 'inline-block';
+                    document.getElementById('errorMessage1').style.display = 'none';
+                } else {
+                    document.getElementById('photoNextBtn1').style.display = 'none';
+                }
+            } else {
+                const selectedCards = document.querySelectorAll('#page5 .photo-card.selected');
+                selectedPhotos2 = selectedCards.length;
+                document.getElementById('progressInfo2').textContent = `Выбрано: ${selectedPhotos2} из ${totalPhotos2}`;
+                if (selectedPhotos2 === totalPhotos2) {
+                    document.getElementById('photoNextBtn2').style.display = 'inline-block';
+                    document.getElementById('errorMessage2').style.display = 'none';
+                } else {
+                    document.getElementById('photoNextBtn2').style.display = 'none';
+                }
+            }
+        }
+
+        function goToPhotoSelection2() {
+            if (selectedPhotos1 === totalPhotos1) {
+                showPage('page5');
+            } else {
+                const errorMsg = document.getElementById('errorMessage1');
+                errorMsg.style.display = 'block';
+                errorMsg.classList.add('shake');
+                setTimeout(() => errorMsg.classList.remove('shake'), 500);
+            }
+        }
+
+        function goToFinalPage() {
+            if (selectedPhotos2 === totalPhotos2) {
+                showPage('finalCongrats');
+                createConfetti();
+            } else {
+                const errorMsg = document.getElementById('errorMessage2');
+                errorMsg.style.display = 'block';
+                errorMsg.classList.add('shake');
+                setTimeout(() => errorMsg.classList.remove('shake'), 500);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b9d', '#d63384', '#ffd6e7', '#ffb3c6', '#ff8fab'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.zIndex = '1000';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+                    document.body.appendChild(confetti);
+                    const duration = Math.random() * 2 + 2;
+                    const rotation = Math.random() * 720;
+                    confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight}px) rotate(${rotation}deg)`, opacity: 0 }
+                    ], {
+                        duration: duration * 1000,
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    }).onfinish = () => confetti.remove();
+                }, i * 50);
+            }
+        }
+    </script>
+</body>
+</html>
