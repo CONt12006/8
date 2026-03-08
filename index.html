@@ -323,6 +323,72 @@
             margin: 20px 0;
         }
 
+        /* Стили для подарка */
+        .gift-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(214, 51, 132, 0.3);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .gift-title {
+            font-size: 28px;
+            color: #d63384;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .gift-text {
+            font-size: 22px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .gift-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #d63384 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.4);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .gift-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(214, 51, 132, 0.6);
+        }
+
+        .qr-container {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .qr-container.show {
+            display: block;
+        }
+
+        .qr-container img {
+            max-width: 300px;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 5px solid #ffd6e7;
+        }
+
+        .qr-message {
+            font-size: 20px;
+            color: #d63384;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -398,6 +464,18 @@
             .final-congrats p {
                 font-size: 20px;
             }
+            .gift-section {
+                padding: 20px;
+            }
+            .gift-title {
+                font-size: 22px;
+            }
+            .gift-text {
+                font-size: 18px;
+            }
+            .qr-container img {
+                max-width: 250px;
+            }
         }
     </style>
 </head>
@@ -464,7 +542,20 @@
             <h2>🎉 ПОЗДРАВЛЯЮ! 🎉</h2>
             <div class="final-emoji">💐❤️</div>
             <p>Тогда любимая моя очень хочется поздравить тебя лично с международным женским днем, выйди на ко мне, люблю тебя солнышко и поздравляю от всей души любимая моя</p>
-            <div style="font-size: 50px; margin-top: 20px;">🌹💕</div>
+            
+            <!-- Секция с подарком -->
+            <div class="gift-section">
+                <div class="gift-title">🎁 Вот тебе небольшой подарок!</div>
+                <div class="gift-text">А остальное ждет тебя лично...<br>Выйди на 5 секунд 💕</div>
+                <button class="gift-btn" onclick="showQR()">Показать подарок</button>
+                
+                <div class="qr-container" id="qrContainer">
+                    <img src="qrcod_bQ7i.png" alt="QR Code">
+                    <div class="qr-message">💖 С 8 Марта, любимая! 💖</div>
+                </div>
+            </div>
+            
+            <div style="font-size: 50px; margin-top: 30px;">🌹💕</div>
         </div>
     </div>
 
@@ -652,6 +743,15 @@
                 errorMsg.classList.add('shake');
                 setTimeout(() => errorMsg.classList.remove('shake'), 500);
             }
+        }
+
+        function showQR() {
+            const qrContainer = document.getElementById('qrContainer');
+            qrContainer.classList.add('show');
+            // Прокрутка к QR-коду
+            setTimeout(() => {
+                qrContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function createConfetti() {
